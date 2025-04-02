@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Your Crystal - Premium Crystal Websites Directory</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .bg-crystal {
+            background: linear-gradient(135deg, #e6f7ff 0%, #f0f8ff 100%);
+        }
+        .lang-selector {
+            position: relative;
+        }
+        .lang-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            width: 150px;
+            z-index: 10;
+        }
+        .lang-selector:hover .lang-dropdown {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-crystal min-h-screen">
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h1 class="text-3xl font-bold text-purple-700">Get Your<span class="text-blue-500"> Crystal</span></h1>
+                    <p class="text-gray-600">Discover premium crystal shopping websites</p>
+                    <p class="text-sm text-purple-500">getyourcrystal.online</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="lang-selector">
+                        <button id="currentLang" class="flex items-center px-3 py-1 border rounded-lg hover:bg-gray-50">
+                            <i class="fas fa-globe mr-2"></i>
+                            <span>English</span>
+                            <i class="fas fa-chevron-down ml-2"></i>
+                        </button>
+                        <div class="lang-dropdown shadow-lg">
+                            <button class="w-full text-left px-4 py-2 hover:bg-gray-50 language-option" data-lang="en">English</button>
+                            <button class="w-full text-left px-4 py-2 hover:bg-gray-50 language-option" data-lang="zh">简体中文</button>
+                            <button class="w-full text-left px-4 py-2 hover:bg-gray-50 language-option" data-lang="fr">Français</button>
+                            <button class="w-full text-left px-4 py-2 hover:bg-gray-50 language-option" data-lang="es">Español</button>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-auto">
+                        <div class="relative">
+                            <input type="text" id="searchInput" placeholder="Search websites..." class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <button class="absolute right-2 top-2 text-purple-500">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="container mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4" id="filterTitle">Filter</h2>
+            <div class="flex flex-wrap gap-4">
+                <div>
+                    <label class="block text-gray-700 mb-2" id="productTypeLabel">Product Type</label>
+                    <select id="typeFilter" class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <option value="all" id="allTypesOption">All</option>
+                        <option value="jewery" id="jeweryOption">Jewelry</option>
+                        <option value="gem" id="gemOption">Gems</option>
+                        <option value="crystals" id="crystalsOption">Crystals</option>
+                        <option value="canddles" id="canddlesOption">Candles</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-2" id="priceRangeLabel">Price Range</label>
+                    <select id="priceFilter" class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <option value="all" id="allPricesOption">All</option>
+                        <option value="low" id="lowPriceOption">Low</option>
+                        <option value="medium" id="mediumPriceOption">Medium</option>
+                        <option value="high" id="highPriceOption">High</option>
+                    </select>
+                </div>
+                <div class="ml-auto flex items-end">
+                    <button id="resetFilters" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                        <span id="resetFiltersText">Reset Filters</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="noResults" class="hidden text-center py-8">
+            <p class="text-gray-600 text-xl" id="noResultsText">No websites found matching your criteria</p>
+        </div>
+
+        <div id="websiteGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Website cards will be dynamically generated by JavaScript -->
+        </div>
+    </section>
+
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="container mx-auto px-4 text-center">
+            <p id="footerCopyright">© 2025 Get Your Crystal - Curating premium crystal shopping websites</p>
+            <p class="mt-2 text-gray-400"><a href="https://getyourcrystal.online" class="text-gray-300 hover:text-white">getyourcrystal.online</a></p>
+            <p class="mt-2 text-gray-400" id="footerDisclaimer">This site provides directory services only and does not sell any products directly</p>
+        </div>
+    </footer>
+
+    <script>
+        // Website data
+        const websites = [
+            {
+                name: "BuddhaStone",
+                displayName: "BuddhaStone Official",
+                url: "https://buddhastoneshop.com/",
+                domain: "buddhastoneshop.com",
+                types: ["jewery", "gem"],
+                price: "medium",
+                logo: "buddhastone-logo.png",
+                description: {
+                    en: "Offers a variety of beautiful Buddhist-style crystal jewelry and gems.",
+                    zh: "提供各种精美佛教风格水晶饰品和宝石。",
+                    fr: "Propose une variété de bijoux et de pierres précieuses en cristal de style bouddhiste.",
+                    es: "Ofrece una variedad de hermosas joyas y gemas de cristal de estilo budista."
+                }
+            },
+            {
+                name: "ИЗБЕРИ ГРИВНА",
+                displayName: "Crystal Energy Shop",
+                url: "https://crystalenergy.shop/",
+                domain: "crystalenergy.shop",
+                types: ["jewery", "gem"],
+                price: "medium",
+                logo: "crystalenergy-logo.png",
+                description: {
+                    en: "Eastern European site specializing in energy crystal jewelry and gems.",
+                    zh: "专注于能量水晶饰品和宝石的东欧网站。",
+                    fr: "Site d'Europe de l'Est spécialisé dans les bijoux en cristal énergétique et les pierres précieuses.",
+                    es: "Sitio de Europa del Este especializado en joyas de cristal energético y gemas."
+                }
+            },
+            {
+                name: "theCrystalCompany",
+                displayName: "The Crystal Company",
+                url: "https://thecrystalcompany.shop/",
+                domain: "thecrystalcompany.shop",
+                types: ["crystals", "canddles"],
+                price: "low",
+                logo: "crystalcompany-logo.png",
+                description: {
+                    en: "Offers affordable crystals and pure natural energy candles.",
+                    zh: "提供平价水晶和纯天然能量蜡烛产品。",
+                    fr: "Propose des cristaux abordables et des bougies énergétiques naturelles pures.",
+                    es: "Ofrece cristales asequibles y velas energéticas naturales puras."
+                }
+            },
+            {
+                name: "HaunteEnergy",
+                displayName: "Haute Energy",
+                url: "https://www.haute-energy.com/",
+                domain: "haute-energy.com",
+                types: ["jewery", "gem"],
+                price: "high",
+                logo: "hauteenergy-logo.png",
+                description: {
+                    en: "High-end crystal jewelry and gems, focusing on quality and design.",
+                    zh: "高端水晶饰品和宝石，注重品质和设计。",
+                    fr: "Bijoux et pierres précieuses en cristal haut de gamme, axés sur la qualité et le design.",
+                    es: "Joyas y gemas de cristal de alta gama, centradas en la calidad y el diseño."
+                }
+            },
+            {
+                name: "EnergyMuse",
+                displayName: "Energy Muse",
+                url: "https://energymuse.com/",
+                domain: "energymuse.com",
+                types: ["crystals", "gem"],
+                price: "medium",
+                logo: "energymuse-logo.png",
+                description: {
+                    en: "Crystal products combining modern design with traditional energy healing.",
+                    zh: "结合现代设计与传统能量疗愈的水晶产品。",
+                    fr: "Produits en cristal combinant design moderne et guérison énergétique traditionnelle.",
+                    es: "Productos de cristal que combinan diseño moderno con curación energética tradicional."
+                }
+            },
+            {
+                name: "KailashEnergy",
+                displayName: "Kailash Energy",
+                url: "https://kailashenergy.com/",
+                domain: "kailashenergy.com",
+                types: ["crystals", "gem"],
+                price: "high",
+                logo: "kailashenergy-logo.png",
+                description: {
+                    en: "High-quality crystal and gem products from the Himalayan region.",
+                    zh: "高品质喜马拉雅地区水晶和宝石产品。",
+                    fr: "Produits en cristal et pierres précieuses de haute qualité de la région himalayenne.",
+                    es: "Productos de cristal y gemas de alta calidad de la región del Himalaya."
+                }
+            }
+        ];
+
+        // Translations
+        const translations = {
+            en: {
+                search: "Search websites...",
+                filter: "Filter",
+                productType: "Product Type",
+                allTypes: "All",
+                jewelry: "Jewelry",
+                gems: "Gems",
+                crystals: "Crystals",
+                candles: "Candles",
+                priceRange: "Price Range",
+                allPrices: "All",
+                lowPrice: "Low",
+                mediumPrice: "Medium",
+                highPrice: "High",
+                resetFilters: "Reset Filters",
+                noResults: "No websites found matching your criteria",
+                visitWebsite: "Visit Website",
+                webAddress: "Web Address:",
+                copyright: "© 2025 Get Your Crystal - getyourcrystal.online",
+                disclaimer: "This site provides directory services only and does not sell any products directly"
+            },
+            zh: {
+                search: "搜索网站...",
+                filter: "筛选",
+                productType: "产品类型",
+                allTypes: "全部",
+                jewelry: "饰品",
+                gems: "宝石",
+                crystals: "水晶",
+                candles: "蜡烛",
+                priceRange: "价格区间",
+                allPrices: "全部",
+                lowPrice: "低价",
+                mediumPrice: "中等",
+                highPrice: "高价",
+                resetFilters: "重置筛选",
+                noResults: "没有找到符合条件的网站",
+                visitWebsite: "访问网站",
+                webAddress: "网址:",
+                copyright: "© 2025 Get Your Crystal - getyourcrystal.online",
+                disclaimer: "本站仅提供网站导航服务，不直接销售任何产品"
+            },
+            fr: {
+                search: "Rechercher des sites...",
+                filter: "Filtrer",
+                productType: "Type de Produit",
+                allTypes: "Tous",
+                jewelry: "Bijoux",
+                gems: "Pierres Précieuses",
+                crystals: "Cristaux",
+                candles: "Bougies",
+                priceRange: "Gamme de Prix",
+                allPrices: "Tous",
+                lowPrice: "Bas",
+                mediumPrice: "Moyen",
+                highPrice: "Élevé",
+                resetFilters: "Réinitialiser les Filtres",
+                noResults: "Aucun site correspondant à vos critères",
+                visitWebsite: "Visiter le Site",
+                webAddress: "Adresse Web:",
+                copyright: "© 2025 Get Your Crystal - getyourcrystal.online",
+                disclaimer: "Ce site fournit uniquement des services d'annuaire et ne vend directement aucun produit"
+            },
+            es: {
+                search: "Buscar sitios web...",
+                filter: "Filtrar",
+                productType: "Tipo de Producto",
+                allTypes: "Todos",
+                jewelry: "Joyería",
+                gems: "Gemas",
+                crystals: "Cristales",
+                candles: "Velas",
+                priceRange: "Rango de Precio",
+                allPrices: "Todos",
+                lowPrice: "Bajo",
+                mediumPrice: "Medio",
+                highPrice: "Alto",
+                resetFilters: "Restablecer Filtros",
+                noResults: "No se encontraron sitios web que coincidan con sus criterios",
+                visitWebsite: "Visitar Sitio",
+                webAddress: "Dirección Web:",
+                copyright: "© 2025 Get Your Crystal - getyourcrystal.online",
+                disclaimer: "Este sitio proporciona únicamente servicios de directorio y no vende ningún producto directamente"
+            }
+        };
+
+        // Current language (default: English)
+        let currentLang = 'en';
+
+        // Update UI text based on selected language
+        function updateUILanguage() {
+            const lang = translations[currentLang];
+            
+            // Update search placeholder
+            document.getElementById('searchInput').placeholder = lang.search;
+            
+            // Update filter section
+            document.getElementById('filterTitle').textContent = lang.filter;
+            document.getElementById('productTypeLabel').textContent = lang.productType;
+            document.getElementById('allTypesOption').textContent = lang.allTypes;
+            document.getElementById('jeweryOption').textContent = lang.jewelry;
+            document.getElementById('gemOption').textContent = lang.gems;
+            document.getElementById('crystalsOption').textContent = lang.crystals;
+            document.getElementById('canddlesOption').textContent = lang.candles;
+            
+            document.getElementById('priceRangeLabel').textContent = lang.priceRange;
+            document.getElementById('allPricesOption').textContent = lang.allPrices;
+            document.getElementById('lowPriceOption').textContent = lang.lowPrice;
+            document.getElementById('mediumPriceOption').textContent = lang.mediumPrice;
+            document.getElementById('highPriceOption').textContent = lang.highPrice;
+            
+            document.getElementById('resetFiltersText').textContent = lang.resetFilters;
+            document.getElementById('noResultsText').textContent = lang.noResults;
+            
+            // Update footer
+            document.getElementById('footerCopyright').textContent = lang.copyright;
+            document.getElementById('footerDisclaimer').textContent = lang.disclaimer;
+            
+            // Update language button
+            document.querySelector('#currentLang span').textContent = 
+                currentLang === 'en' ? 'English' : 
+                currentLang === 'zh' ? '简体中文' : 
+                currentLang === 'fr' ? 'Français' : 'Español';
+            
+            // Refresh website grid to update descriptions
+            filterWebsites();
+        }
+
+        // Initialize website display
+        function displayWebsites(websitesToShow) {
+            const websiteGrid = document.getElementById('websiteGrid');
+            websiteGrid.innerHTML = '';
+            
+            const noResults = document.getElementById('noResults');
+            if (websitesToShow.length === 0) {
+                noResults.classList.remove('hidden');
+                return;
+            } else {
+                noResults.classList.add('hidden');
+            }
+
+            const lang = translations[currentLang];
+            
+            websitesToShow.forEach(website => {
+                const priceText = {
+                    'low': lang.lowPrice,
+                    'medium': lang.mediumPrice,
+                    'high': lang.highPrice
+                }[website.price];
+
+                const typeIcons = {
+                    'jewery': `<i class="fas fa-gem mr-1"></i> ${lang.jewelry}`,
+                    'gem': `<i class="fas fa-diamond mr-1"></i> ${lang.gems}`,
+                    'crystals': `<i class="fas fa-cubes mr-1"></i> ${lang.crystals}`,
+                    'canddles': `<i class="fas fa-fire mr-1"></i> ${lang.candles}`
+                };
+
+                const description = website.description[currentLang] || website.description['en'];
+
+                const cardHTML = `
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden card-hover transition duration-300">
+                        <div class="p-4 bg-purple-50">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h3 class="text-xl font-bold text-purple-700">${website.displayName || website.name}</h3>
+                                    <p class="text-gray-500 text-sm mt-1"><i class="fas fa-tag mr-1"></i> ${website.domain}</p>
+                                </div>
+                                <span class="px-3 py-1 bg-${website.price === 'high' ? 'red' : website.price === 'medium' ? 'blue' : 'green'}-100 text-${website.price === 'high' ? 'red' : website.price === 'medium' ? 'blue' : 'green'}-800 rounded-full text-xs font-semibold">${priceText}</span>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-gray-600 mb-4">${description}</p>
+                            <div class="mb-3">
+                                <p class="text-gray-500 text-sm"><i class="fas fa-globe mr-1"></i> <span class="font-medium">${lang.webAddress}</span> <a href="${website.url}" class="text-blue-500 hover:underline" target="_blank">${website.url}</a></p>
+                            </div>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                ${website.types.map(type => `<span class="px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-xs">${typeIcons[type] || type}</span>`).join('')}
+                            </div>
+                            <a href="${website.url}" target="_blank" class="block w-full text-center py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition">${lang.visitWebsite}</a>
+                        </div>
+                    </div>
+                `;
+                
+                websiteGrid.innerHTML += cardHTML;
+            });
+        }
+
+        // Search and filter functionality
+        function filterWebsites() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const typeFilter = document.getElementById('typeFilter').value;
+            const priceFilter = document.getElementById('priceFilter').value;
+            
+            let filteredWebsites = websites.filter(website => {
+                // Search filter
+                const matchesSearch = website.displayName.toLowerCase().includes(searchTerm) || 
+                                    website.name.toLowerCase().includes(searchTerm) || 
+                                    website.description[currentLang].toLowerCase().includes(searchTerm);
+                
+                // Type filter
+                const matchesType = typeFilter === 'all' || website.types.includes(typeFilter);
+                
+                // Price filter
+                const matchesPrice = priceFilter === 'all' || website.price === priceFilter;
+                
+                return matchesSearch && matchesType && matchesPrice;
+            });
+            
+            displayWebsites(filteredWebsites);
+        }
+
+        // Language selection
+        document.querySelectorAll('.language-option').forEach(option => {
+            option.addEventListener('click', function() {
+                currentLang = this.dataset.lang;
+                updateUILanguage();
+            });
+        });
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', filterWebsites);
+        document.getElementById('typeFilter').addEventListener('change', filterWebsites);
+        document.getElementById('priceFilter').addEventListener('change', filterWebsites);
+        document.getElementById('resetFilters').addEventListener('click', function() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('typeFilter').value = 'all';
+            document.getElementById('priceFilter').value = 'all';
+            filterWebsites();
+        });
+
+        // Initialize with English language
+        updateUILanguage();
+    </script>
+</body>
+</html>
